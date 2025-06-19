@@ -1,0 +1,65 @@
+# ─────────────────────────────────────────────────────────────
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+
+# ─────────────────────────────────────────────────────────────
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+*.pyo
+*.egg
+*.egg-info/
+dist/
+build/
+
+# ─────────────────────────────────────────────────────────────
+# Environments
+.venv/
+env/
+ENV/
+_ai_venv/
+*.env
+.env.*
+
+# ─────────────────────────────────────────────────────────────
+# Editor files
+.vscode/
+.idea/
+*.code-workspace
+
+# ─────────────────────────────────────────────────────────────
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# ─────────────────────────────────────────────────────────────
+# Tests & Coverage
+.coverage
+.tox/
+htmlcov/
+nosetests.xml
+coverage.xml
+.pytest_cache/
+pytest-debug.log
+
+# ─────────────────────────────────────────────────────────────
+# FastAPI / Uvicorn
+*.db
+*.sqlite3
+
+# ─────────────────────────────────────────────────────────────
+# Model cache or keys (if used)
+api_keys.json
+*.ckpt
+*.pt
+*.onnx
+
+# ─────────────────────────────────────────────────────────────
+# Documentation builds
+_site/
+docs/_build/

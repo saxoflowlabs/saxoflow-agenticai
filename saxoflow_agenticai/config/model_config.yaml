@@ -1,0 +1,8 @@
+default_provider: groq
+
+groq:
+  model: llama3-8b-8192
+
+available_models:
+  - llama3-8b-8192
+  - gemma-7b-it

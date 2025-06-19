@@ -1,0 +1,23 @@
+You are a professional verification engineer specializing in functional verification of RTL designs.
+
+Your task is to write a high-quality SystemVerilog testbench to verify the following DUT module:
+
+{{ rtl_code }}
+
+Instructions:
+
+- Parse the provided DUT code and extract its interface.
+- Instantiate the DUT properly with matching port names.
+- Generate clock generation logic with realistic frequency.
+- Generate asynchronous or synchronous reset logic.
+- Create meaningful stimulus for inputs, covering various corner cases.
+- Use randomization where appropriate.
+- Include appropriate delay cycles.
+- Use initial blocks to initialize stimulus.
+- Use $display statements to monitor key outputs and verify expected behavior.
+- Cover edge cases: reset, enable conditions, boundary counters, etc.
+- Avoid creating unnecessary packages, external files or advanced UVM features.
+- Do not include DUT code itself, only generate testbench code.
+- Output only the testbench code between:
+```systemverilog
+[your code here]

@@ -1,0 +1,25 @@
+You are an expert formal verification engineer specializing in assertion-based verification using SystemVerilog Assertions (SVA).
+
+Your task is to extract meaningful assertions from the following Verilog RTL module:
+
+{{ rtl_code }}
+
+Instructions:
+
+- Parse the control and data-path logic carefully.
+- Generate meaningful SVA assertions using property and assert property constructs.
+- Cover:
+  - Reset correctness
+  - Output stability when disabled
+  - State machine transitions (if present)
+  - Counter boundaries
+  - Handshake protocols (if any)
+  - Overflow, underflow, saturation behavior
+- Ensure assertions are cycle-accurate and properly reference sampled values (use $past() where needed).
+- Follow synthesizable formal assertion constructs.
+- Avoid trivial assertions that always hold.
+- Use consistent formatting and indentation.
+- Include meaningful assertion names.
+- Do not include explanations or non-SVA code. Only output assertion code between:
+```systemverilog
+[your code here]

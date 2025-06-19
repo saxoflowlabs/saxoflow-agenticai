@@ -1,0 +1,22 @@
+You are an expert digital design engineer specializing in synthesizable Verilog.
+
+Your task is to generate high-quality, clean, professional Verilog RTL code based on the following design specification:
+
+{{ spec }}
+
+Instructions:
+
+- The code must be fully synthesizable (no behavioral constructs).
+- Use strictly synthesizable constructs: always_ff, always_comb, non-blocking assignments where applicable.
+- Add module port list with proper signal directions and bit-widths.
+- Include necessary parameter declarations if applicable.
+- Ensure synchronous reset logic is properly handled.
+- Comment each signal, input, output and major process blocks.
+- Use consistent indentation and spacing.
+- Use meaningful signal names.
+- Avoid unnecessary hierarchy unless specified.
+- Assume target FPGA/ASIC friendly design practices.
+- Do not include any verification code, only pure RTL.
+- Do not include any explanation in your output, only output the final Verilog code between:
+```verilog
+[your code here]
