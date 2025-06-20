@@ -1,8 +1,6 @@
-# 🧠 SaxoFlow-AgenticAI
+# 🤖 SaxoFlow-AgenticAI
 
-**SaxoFlow-AgenticAI** is an experimental AI-driven framework that automates digital hardware design and verification using LLM-based agents. It works standalone or in tandem with [SaxoFlow](https://github.com/saxoflowlabs/saxoflow) to generate, review, and refine RTL designs from natural language specifications.
-
-> 📍 Designed for ASIC/FPGA students, researchers, and verification engineers seeking automation in the RTL development lifecycle.
+**SaxoFlow-AgenticAI** is an experimental AI-driven framework that automates digital hardware design and verification using LLM-based agents. Designed for ASIC/FPGA students, researchers, design and verification engineers seeking automation in the RTL development lifecycle. It works standalone or in tandem with [SaxoFlow](https://github.com/saxoflowlabs/saxoflow) to generate, review, and refine RTL designs from natural language specifications.
 
 ---
 
@@ -40,8 +38,7 @@ RTL / TB / FProp
 ✅ Testbench & Assertion Auto-Generator  
 ✅ AI-based Code Review Agents  
 ✅ Iterative improvement pipeline (upcoming)  
-✅ CLI and REST API interface  
-✅ Easy integration with [SaxoFlow](https://github.com/saxoflowlabs/saxoflow) for full RTL-to-GDSII flow
+✅ Easy integration with [SaxoFlow](https://github.com/saxoflowlabs/saxoflow) for full RTL-to-GDSII flow (upcoming)
 
 ---
 
@@ -117,23 +114,6 @@ python3 -m saxoflow_agenticai.cli fproprev
 
 ---
 
-### 🌐 REST API (FastAPI)
-
-Start the API server:
-
-```bash
-uvicorn saxoflow_agenticai.api_server:app --reload
-```
-
-Example endpoint:
-
-```http
-POST /rtlgen
-Body: { "spec": "Create an 8-bit priority encoder" }
-```
-
----
-
 ## 📁 Repo Structure
 
 ```
@@ -172,7 +152,7 @@ saxoflow_agenticai/
 ## 🧠 What’s Coming Next
 
 * 🔁 Iterative design improvement loop (LLM-based fixing via review)
-* 🧪 Symbiyosys, Verilator integration for tool-assisted verification
+* 🧪 Symbiyosys, Verilator and Icarus Verilog integration for tool-assisted verification
 * 📉 Confidence scoring and metrics per design phase
 * 🧠 Human-in-the-loop RTL acceptance
 * 🧩 Tight GUI integration with SaxoFlow VSCode plugin
