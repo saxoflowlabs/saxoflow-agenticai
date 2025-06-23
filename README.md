@@ -8,7 +8,7 @@
 * RTL & Verification engineers
 * EDA/AI/ML enthusiasts
 
-**Works standalone or as a companion to [SaxoFlow](https://github.com/saxoflowlabs/saxoflow) for RTL-to-GDSII flows.**
+**Works standalone or as a companion to [SaxoFlow](https://github.com/saxoflowlabs/saxoflow-starter) for RTL-to-GDSII flows.**
 
 ---
 
