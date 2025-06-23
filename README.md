@@ -1,50 +1,73 @@
 # 🤖 SaxoFlow-AgenticAI
 
-**SaxoFlow-AgenticAI** is an experimental AI-driven framework that automates digital hardware design and verification using LLM-based agents. Designed for ASIC/FPGA students, researchers, design and verification engineers seeking automation in the RTL development lifecycle. It works standalone or in tandem with [SaxoFlow](https://github.com/saxoflowlabs/saxoflow) to generate, review, and refine RTL designs from natural language specifications.
+**SaxoFlow-AgenticAI** is an experimental, open-source AI-driven framework that automates digital IC design and verification. It leverages LLM-based agents for every stage of the hardware design pipeline, from specification to review and reporting.
+
+**Audience:**
+
+* Students & researchers (ASIC/FPGA/digital design)
+* RTL & Verification engineers
+* EDA/AI/ML enthusiasts
+
+**Works standalone or as a companion to [SaxoFlow](https://github.com/saxoflowlabs/saxoflow) for RTL-to-GDSII flows.**
 
 ---
 
 ## 📐 Architecture Overview
 
-This project follows an **agentic architecture**, where each stage of the hardware design flow is handled by a dedicated AI agent:
+SaxoFlow-AgenticAI uses a **modular agent pipeline**, with a dedicated LLM-powered agent for each stage.
+Agents can use different LLM providers (Groq, Mistral, Google Gemini, Fireworks, etc) — *configurable per agent!*
+
+### **Block Diagram**
 
 ```
+[ Natural Language Spec / Markdown ]
+                │
+         ┌──────▼───────┐
+         │ RTLGenAgent  │  ───► [ SystemVerilog RTL ]
+         └──────┬───────┘
+                │
+         ┌──────▼───────┐
+         │ TBGenAgent   │  ───► [ SystemVerilog Testbench ]
+         └──────┬───────┘
+                │
+         ┌──────▼─────────┐
+         │ FPropGenAgent  │  ───► [ SVA / Formal Properties ]
+         └──────┬─────────┘
+                │
+        ╔═══════▼════════╗
+        ║  Review Agents ║  ───► [ RTLReview, TBReview, FPropReview ]
+        ╚═══════┬════════╝
+                │
+         ┌──────▼───────┐
+         │ DebugAgent   │  ───► [ Debug Reports ]
+         └──────┬───────┘
+                │
+         ┌──────▼───────┐
+         │ ReportAgent  │  ───► [ Full Pipeline Summary Report ]
+         └──────────────┘
+```
 
-\[ Natural Language Spec ]
-│
-┌─────▼──────┐
-│ RTLGenAgent│ ──▶ SystemVerilog RTL
-└─────┬──────┘
-│
-┌─────▼──────┐
-│ TBGenAgent │ ──▶ SystemVerilog Testbench
-└─────┬──────┘
-│
-┌─────▼────────┐
-│ FPropGenAgent│ ──▶ SVA / Formal Assertions
-└─────┬────────┘
-│
-▼
-\[ Review Agents ]
-RTL / TB / FProp
-
-````
+**Every box = one agent = one LLM backend (configurable!).**
 
 ---
 
 ## 🔧 Features
 
-✅ Natural Language to Verilog Generator  
-✅ Testbench & Assertion Auto-Generator  
-✅ AI-based Code Review Agents  
-✅ Iterative improvement pipeline (upcoming)  
-✅ Easy integration with [SaxoFlow](https://github.com/saxoflowlabs/saxoflow) for full RTL-to-GDSII flow (upcoming)
+* ✅ **Natural language → Verilog** (spec-driven)
+* ✅ **Auto testbench & assertion generation**
+* ✅ **Multi-agent review:** AI checks your code and properties
+* ✅ **Iterative improvement loops** (user-configurable)
+* ✅ **Debugging & simulation log analysis**
+* ✅ **Pipeline report generation**
+* ✅ **Pluggable LLM backends per agent:** (Groq, Mistral, Gemini, Fireworks, OpenRouter...)
+* ✅ **CLI and (future) FastAPI/GUI support**
+* ✅ **Designed for easy VSCode plugin integration**
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Clone and set up virtual environment
+### 1. Clone & set up environment
 
 ```bash
 git clone https://github.com/saxoflowlabs/saxoflow-agenticai.git
@@ -54,132 +77,72 @@ python3 -m venv _ai_venv
 source _ai_venv/bin/activate
 
 pip install -e .
-````
-
-### 2. Configure the model
-
-Edit the file `config/model_config.yaml`:
-
-```yaml
-default_provider: groq
-
-groq:
-  model: llama3-8b-8192
-
-openrouter:
-  model: meta-llama-3-8b-instruct
-```
-
-Ensure your API keys are set as environment variables:
-
-```bash
-export GROQ_API_KEY=your_key
-export OPENROUTER_API_KEY=your_key
 ```
 
 ---
 
 ## 🖥️ Usage
 
-### 🧪 CLI Mode
+### 🔍 **Pipeline Test**
+
+Quickly test that all agent LLMs are connected and mapped:
 
 ```bash
-python3 -m saxoflow_agenticai.cli fullpipeline
+python3 -m saxoflow_agenticai.cli testllms
 ```
 
-You will be prompted:
+### 🧪 **Full Design Pipeline**
+
+Generate, review, debug, and summarize a design from spec:
 
 ```bash
-Enter full design spec:
-> Create a 4-bit binary counter with enable and reset.
+python3 -m saxoflow_agenticai.cli fullpipeline -i input/spec/alu_spec.md --iters 2
 ```
 
-It will print:
-
-* RTL code
-* Testbench
-* Formal properties
-* Review reports
-
-Other CLI commands:
+**Other commands:**
 
 ```bash
-python3 -m saxoflow_agenticai.cli rtlgen
-python3 -m saxoflow_agenticai.cli tbgen
-python3 -m saxoflow_agenticai.cli fpropgen
-python3 -m saxoflow_agenticai.cli rtlreview
-python3 -m saxoflow_agenticai.cli tbrev
-python3 -m saxoflow_agenticai.cli fproprev
+python3 -m saxoflow_agenticai.cli rtlgen -i input/spec/your_spec.md
+python3 -m saxoflow_agenticai.cli tbgen -i output/rtl/your_rtl.v
+python3 -m saxoflow_agenticai.cli fpropgen -i output/rtl/your_rtl.v
+python3 -m saxoflow_agenticai.cli rtlreview -i output/rtl/your_rtl.v
+python3 -m saxoflow_agenticai.cli tbreview -i output/tb/your_tb.sv
+python3 -m saxoflow_agenticai.cli fpropreview -i output/formal/your_props.sv
+python3 -m saxoflow_agenticai.cli debug -i output/sim/your_log.txt
 ```
+
+**Outputs are saved to `output/` folders and printed to terminal.**
 
 ---
 
-## 📁 Repo Structure
+## 🧠 Roadmap
 
-```
-saxoflow_agenticai/
-│
-├── agents/
-│   ├── generators/
-│   └── reviewers/
-│
-├── core/
-│   ├── agent_base.py
-│   ├── agent_manager.py
-│   ├── log_manager.py
-│   ├── model_selector.py
-│   └── prompt_manager.py
-│
-├── orchestrator/
-│   └── agent_orchestrator.py
-│
-├── utils/
-│   ├── formatters.py
-│   └── validators.py
-│
-├── prompts/
-│   └── *.txt   ← prompt templates
-│
-├── config/
-│   └── model_config.yaml
-│
-├── cli.py         ← CLI Interface
-└── api_server.py  ← FastAPI Server
-```
-
----
-
-## 🧠 What’s Coming Next
-
-* 🔁 Iterative design improvement loop (LLM-based fixing via review)
-* 🧪 Symbiyosys, Verilator and Icarus Verilog integration for tool-assisted verification
-* 📉 Confidence scoring and metrics per design phase
-* 🧠 Human-in-the-loop RTL acceptance
-* 🧩 Tight GUI integration with SaxoFlow VSCode plugin
+* 🔁 Iterative agent review/improvement (user-settable)
+* 🧪 Integrated SymbiYosys/Verilator/Icarus runs for feedback-driven refinement
+* 📊 LLM confidence scoring
+* 🧑‍💻 Human-in-the-loop review acceptance
+* 🧩 VSCode plugin & GUI dashboards
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions from the EDA/FPGA/ML community. To contribute:
+We welcome all contributions — students, researchers, industry engineers.
 
-1. Fork this repo
-2. Work on a branch
-3. Submit a Pull Request
-
-Let’s build the future of AI-assisted digital design together.
+* **Fork, branch, and submit PRs**
+* For ideas, bugfixes, or agent templates: open an issue!
 
 ---
 
 ## 📜 License
 
-This project is released under the Apache-2.0 License.
+Apache-2.0 License. See [LICENSE](./LICENSE).
 
 ---
 
-## 🧑‍💻 Maintainers
+## 👥 Maintainers
 
-Built by [SaxoFlow Labs](https://github.com/saxoflowlabs) — a student-led initiative from TU Dresden.
+Built by [SaxoFlow Labs](https://github.com/saxoflowlabs) — a student-led community at TU Dresden.
 
-
+---
 

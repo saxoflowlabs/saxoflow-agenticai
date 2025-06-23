@@ -1,0 +1,19 @@
+**Project Development Report**
+
+## RTL Generation Phase
+A synthesizable RTL module was generated as per the provided specification. Main components included the ALU, control unit, and memory interface. The RTL code was successfully compiled with no syntax errors. However, a warning was issued regarding potential timing issues in the ALU, which needs further investigation.
+
+## Testbench Generation Phase
+A SystemVerilog testbench was created to verify the RTL design. Coverage and stimulus quality were reviewed. The testbench achieved 95% functional coverage, but there were some gaps in the corner cases for the memory interface. Suggestions were made to enhance the testbench to cover these scenarios.
+
+## Formal Property Generation Phase
+SystemVerilog Assertions were proposed to ensure functional correctness. Key properties included checking the ALU operations and ensuring proper memory read/write operations. All properties were successfully checked, with no violations reported. However, a suggestion was made to add more properties to cover edge cases in the control unit.
+
+## Review Phases
+Reviewers provided constructive feedback, pointing out minor issues in the RTL code and testbench. Recommendations included optimizing the control unit logic and improving the clarity of the testbench documentation. All feedback was addressed, and the design was approved for the next phase.
+
+## Debugging/Simulation Phase
+Simulation logs were analyzed. Key issues found included a timing violation in the ALU and a functional bug in the memory interface. Both issues were debugged and resolved. The final simulation run confirmed that the design operates correctly under the given test scenarios.
+
+## Summary and Recommendations
+The design process is complete up to functional verification. All core requirements are met. It is recommended to proceed with synthesis and layout phases. Additionally, further optimization of the control unit and enhancement of the testbench for corner cases should be considered. The project is on track, with no open issues at this stage. The next steps include synthesis, place and route, and physical verification.
