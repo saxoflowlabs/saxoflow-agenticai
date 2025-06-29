@@ -1,0 +1,24 @@
+[project]
+name = "saxoflow_agenticai"
+version = "0.1.0"
+description = "AI agent framework for digital design"
+authors = [{name = "SaxoFlow Labs", email = "saxoflowlabs@gmail.com"}]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "openai",
+    "click",
+    "python-dotenv",
+    "jinja2",
+    "requests",
+    "pyyaml",
+    "fastapi",
+    "uvicorn"
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["saxoflow_agenticai*"]

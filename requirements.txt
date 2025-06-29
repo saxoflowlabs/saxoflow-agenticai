@@ -1,8 +1,1 @@
-openai
-click
-python-dotenv
-jinja2
-requests
-pyyaml
-fastapi
-uvicorn
+-e .

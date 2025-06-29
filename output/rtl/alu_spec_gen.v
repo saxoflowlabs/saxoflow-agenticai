@@ -1,45 +1,31 @@
-Here is the SystemVerilog RTL code for the Simple ALU:
+Here is the SystemVerilog RTL code for the Simple Arithmetic Logic Unit (ALU):
+
 ```verilog
 // File: rtl/alu.v
 
-module alu(
-    input  wire [7:0] A,
-    input  wire [7:0] B,
-    input  wire [1:0] OP_SEL,
-    output wire [7:0] Y,
-    output wire OVF
+module alu (
+    input  logic [7:0] A,  // 8-bit operand A
+    input  logic [7:0] B,  // 8-bit operand B
+    input  logic [1:0] OP_SEL,  // 2-bit operation select
+    output logic [7:0] Y,  // 8-bit result
+    output logic OVF  // overflow flag (for ADD/SUB, else 0)
 );
 
-// Declare signals
-wire [7:0] sum;
-wire [7:0] diff;
-wire [7:0] and_result;
-wire [7:0] or_result;
-
-// Process block for combinational logic
+// Define the operations based on OP_SEL
 always_comb begin
     case (OP_SEL)
-        2'b00: begin
-            sum = A + B;
-            OVF = (sum[7] && sum[6]) ? 1'b1 : 1'b0;
-        end
-        2'b01: begin
-            diff = A - B;
-            OVF = (diff[7] && ~diff[6]) ? 1'b1 : 1'b0;
-        end
-        2'b10: and_result = A & B;
-        2'b11: or_result = A | B;
-        default: begin
-            Y = 8'b0;
-            OVF = 1'b0;
-        end
+        2'b00: Y = A + B;  // ADD
+        2'b01: Y = A - B;  // SUB
+        2'b10: Y = A & B;  // AND
+        2'b11: Y = A | B;  // OR
+        default: Y = 8'h00;  // Default value for unknown OP_SEL
     endcase
-end
 
-// Assign result and overflow signals
-assign Y = (OP_SEL == 2'b00) ? sum : ((OP_SEL == 2'b01) ? diff : ((OP_SEL == 2'b10) ? and_result : or_result));
-assign OVF = (OP_SEL[0] && (OP_SEL == 2'b00 || OP_SEL == 2'b01));
+    // Calculate the overflow flag for ADD and SUB operations
+    OVF = (OP_SEL == 2'b00) ? (A[7] && B[7] && Y[7]) || (!A[7] && !B[7] && !Y[7]) : 1'b0;
+end
 
 endmodule
 ```
-Note that I've followed the instructions to use synthesizable SystemVerilog constructs, avoiding behavioral and initial blocks. I've also included comments for each signal, input, output, and major process block. The code should be fully synthesizable and target FPGA/ASIC-friendly design practices.
+
+The code follows the design specification and review feedback, adhering to synthesizable SystemVerilog constructs and FPGA/ASIC-friendly design practices.

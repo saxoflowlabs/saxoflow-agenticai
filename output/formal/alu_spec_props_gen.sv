@@ -1,21 +1,52 @@
 ```systemverilog
-// Check if OVF remains low after reset
-assert property (@(posedge clk) disable iff (!rst_n) rst_n |-> always(!OVF)) else $error("OVF not reset correctly");
+// Check if OVF is correctly calculated for ADD operation
+property p_ovf_add;
+    @(posedge clk) disable iff (!rst_n)
+    (OP_SEL == 2'b00) |-> (OVF == ((A[7] && B[7] && !Y[7]) || (!A[7] && !B[7] && Y[7])));
+endproperty
+assert property (p_ovf_add);
+
+// Check if OVF is correctly calculated for SUB operation
+property p_ovf_sub;
+    @(posedge clk) disable iff (!rst_n)
+    (OP_SEL == 2'b01) |-> (OVF == ((A[7] && !B[7] && !Y[7]) || (!A[7] && B[7] && Y[7])));
+endproperty
+assert property (p_ovf_sub);
+
+// Check if OVF is 0 for non-ADD/SUB operations
+property p_ovf_non_add_sub;
+    @(posedge clk) disable iff (!rst_n)
+    (OP_SEL != 2'b00 && OP_SEL != 2'b01) |-> (OVF == 0);
+endproperty
+assert property (p_ovf_non_add_sub);
 
 // Check input stability
-assert property (@(posedge clk) disable iff (!rst_n) $stable(A)) else $error("A is not stable");
-assert property (@(posedge clk) disable iff (!rst_n) $stable(B)) else $error("B is not stable");
-assert property (@(posedge clk) disable iff (!rst_n) $stable(OP_SEL)) else $error("OP_SEL is not stable");
+property p_input_stable;
+    @(posedge clk) disable iff (!rst_n)
+    $stable(A) && $stable(B) && $stable(OP_SEL);
+endproperty
+assert property (p_input_stable);
 
-// Check OP_SEL range
-assert property (@(posedge clk) disable iff (!rst_n) (OP_SEL inside {[2'b00:2'b11]})) else $error("OP_SEL out of range");
+// Check reset behavior for Y and OVF
+property p_reset_behavior_y;
+    @(posedge clk) disable iff (rst_n)
+    !rst_n |-> (Y == 0);
+endproperty
+assert property (p_reset_behavior_y);
 
-// Check OVF behavior for addition and subtraction
-assert property (@(posedge clk) disable iff (!rst_n) (OP_SEL == 2'b00 && A == 8'h7F && B == 8'h01) |-> OVF) else $error("OVF not set for addition overflow");
-assert property (@(posedge clk) disable iff (!rst_n) (OP_SEL == 2'b00 && A == 8'h80 && B == 8'hFF) |-> OVF) else $error("OVF not set for addition underflow");
-assert property (@(posedge clk) disable iff (!rst_n) (OP_SEL == 2'b01 && A == 8'h80 && B == 8'h01) |-> OVF) else $error("OVF not set for subtraction underflow");
-assert property (@(posedge clk) disable iff (!rst_n) (OP_SEL == 2'b01 && A == 8'h7F && B == 8'hFF) |-> OVF) else $error("OVF not set for subtraction overflow");
+property p_reset_behavior_ovf;
+    @(posedge clk) disable iff (rst_n)
+    !rst_n |-> (OVF == 0);
+endproperty
+assert property (p_reset_behavior_ovf);
 
-// Check relationship between Y and OVF for addition and subtraction
-assert property (@(posedge clk) disable iff (!rst_n) (OP_SEL == 2'b00 && OVF) |-> (Y == 8'h7F || Y == 8'h80)) else $error("Y not saturated for addition overflow");
-assert property (@(posedge clk) disable iff (!rst_n) (OP_SEL == 2'b01 && OVF) |-> (Y == 8'h7F || Y
+// Check if Y is correctly calculated for each operation
+property p_y_add;
+    @(posedge clk) disable iff (!rst_n)
+    (OP_SEL == 2'b00) |-> (Y == $past(A) + $past(B));
+endproperty
+assert property (p_y_add);
+
+property p_y_sub;
+    @(posedge clk) disable iff (!rst_n)
+    (OP_SEL == 2'b01) |-> (Y == $past(A) - $past
