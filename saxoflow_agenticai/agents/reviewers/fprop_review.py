@@ -16,19 +16,23 @@ class FormalPropReviewAgent(BaseAgent):
             override_model=override_model,
         )
 
-    def run(self, prop_code: str) -> str:
+    def run(self, spec: str, rtl_code: str, prop_code: str) -> str:
         """
         Review SystemVerilog formal properties for coverage and completeness.
         """
-        prompt = self.render_prompt({"formal_properties": prop_code})
+        prompt = self.render_prompt({
+            "spec": spec,
+            "rtl_code": rtl_code,
+            "formal_properties": prop_code,
+        })
         logger.debug("[FormalPropReviewAgent] Prepared formal property review prompt.")
         result = self.query_model(prompt)
         logger.info("[FormalPropReviewAgent] Formal property review completed.")
         return result
 
-    def improve(self, prop_code: str, feedback: str) -> str:
+    def improve(self, spec: str, rtl_code: str, prop_code: str, feedback: str) -> str:
         """
         Re-run the review or escalate based on new feedback.
         """
         logger.info("[FormalPropReviewAgent] Re-running formal property review with feedback context (if any).")
-        return self.run(prop_code)
+        return self.run(spec, rtl_code, prop_code)

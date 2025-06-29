@@ -9,7 +9,7 @@ class RTLGenAgent(BaseAgent):
             template_name="rtlgen_prompt.txt",
             name="RTL Generator",
             description="Generates synthesizable RTL code from a design specification.",
-            agent_type="rtlgen",  # Explicit mapping for config!
+            agent_type="rtlgen",
             verbose=verbose,
             log_to_file=log_to_file,
             override_provider=override_provider,
@@ -26,14 +26,15 @@ class RTLGenAgent(BaseAgent):
         logger.info("[RTLGenAgent] RTL code generated successfully.")
         return result
 
-    def improve(self, spec: str, review: str) -> str:
+    def improve(self, spec: str, prev_rtl_code: str, review: str) -> str:
         """
-        Use review feedback to improve the RTL code.
+        Use review feedback to improve the existing RTL code.
+        Uses rtlgen_improve_prompt.txt as template.
         """
-        prompt = self.render_prompt({
-            "spec": spec,
-            "review": review
-        })
+        prompt = self.render_prompt(
+            {"spec": spec, "prev_rtl_code": prev_rtl_code, "review": review},
+            template_name="rtlgen_improve_prompt.txt"
+        )
         logger.debug("[RTLGenAgent] Prompt prepared for RTL improvement with review feedback.")
         result = self.query_model(prompt)
         logger.info("[RTLGenAgent] Improved RTL code generated.")

@@ -22,7 +22,7 @@ class OpenAIGateway(ModelGateway):
             "model": self.model,
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0.2,
-            "max_tokens": 512,
+            "max_tokens": 8192,
         }
         response = requests.post(self.url, headers=headers, json=body)
         if response.status_code != 200:

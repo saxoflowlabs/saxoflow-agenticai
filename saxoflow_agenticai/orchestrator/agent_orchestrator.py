@@ -23,7 +23,7 @@ class AgentOrchestrator:
         rtlreview = AgentManager.get_agent("rtlreview", verbose=verbose)
         rtl_code, rtl_review_report = AgentFeedbackCoordinator.iterate_improvements(
             agent=rtlgen,
-            initial_input=spec,
+            initial_spec=spec,  # (spec,)
             feedback_agent=rtlreview,
             max_iters=max_iters
         )
@@ -33,9 +33,9 @@ class AgentOrchestrator:
         logger.debug("[Orchestrator] Invoking TBGenAgent with review loop...")
         tbgen = AgentManager.get_agent("tbgen", verbose=verbose)
         tbreview = AgentManager.get_agent("tbreview", verbose=verbose)
-        testbench_code, tb_review_report = AgentFeedbackCoordinator.iterate_improvements(
+        tb_code, tb_review_report = AgentFeedbackCoordinator.iterate_improvements(
             agent=tbgen,
-            initial_input=rtl_code,
+            initial_spec=(spec, rtl_code),
             feedback_agent=tbreview,
             max_iters=max_iters
         )
@@ -47,7 +47,7 @@ class AgentOrchestrator:
         fpropreview = AgentManager.get_agent("fpropreview", verbose=verbose)
         formal_properties, fprop_review_report = AgentFeedbackCoordinator.iterate_improvements(
             agent=fpropgen,
-            initial_input=rtl_code,
+            initial_spec=(spec, rtl_code),
             feedback_agent=fpropreview,
             max_iters=max_iters
         )
@@ -57,7 +57,7 @@ class AgentOrchestrator:
         logger.debug("[Orchestrator] Invoking DebugAgent...")
         debug_agent = AgentManager.get_agent("debug", verbose=verbose)
         debug_report = debug_agent.run(
-            f"RTL Code:\n{rtl_code}\n\nTestbench Code:\n{testbench_code}\n\nFormal Properties:\n{formal_properties}"
+            f"RTL Code:\n{rtl_code}\n\nTestbench Code:\n{tb_code}\n\nFormal Properties:\n{formal_properties}"
         )
         logger.info("[Orchestrator] Debug phase completed.")
 
@@ -67,7 +67,7 @@ class AgentOrchestrator:
         phase_outputs = {
             "rtl_generation": rtl_code,
             "rtl_review": rtl_review_report,
-            "testbench_generation": testbench_code,
+            "testbench_generation": tb_code,
             "testbench_review": tb_review_report,
             "formal_property_generation": formal_properties,
             "formal_property_review": fprop_review_report,
@@ -78,7 +78,7 @@ class AgentOrchestrator:
 
         results = {
             "rtl_code": rtl_code,
-            "testbench_code": testbench_code,
+            "testbench_code": tb_code,
             "formal_properties": formal_properties,
             "rtl_review_report": rtl_review_report,
             "tb_review_report": tb_review_report,

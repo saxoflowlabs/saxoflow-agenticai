@@ -16,24 +16,33 @@ class FormalPropGenAgent(BaseAgent):
             override_model=override_model,
         )
 
-    def run(self, rtl_code: str) -> str:
+    def run(self, spec: str, rtl_code: str) -> str:
         """
-        Generate SystemVerilog formal properties (SVAs) for the given RTL code.
+        Generate SystemVerilog formal properties (SVAs) for the given RTL code and design spec.
         """
-        prompt = self.render_prompt({"rtl_code": rtl_code})
+        prompt = self.render_prompt({
+            "spec": spec,
+            "rtl_code": rtl_code,
+        })
         logger.debug("[FormalPropGenAgent] Prompt prepared for formal property generation.")
         result = self.query_model(prompt)
         logger.info("[FormalPropGenAgent] Formal properties generated successfully.")
         return result
 
-    def improve(self, rtl_code: str, review: str) -> str:
+    def improve(self, spec: str, rtl_code: str, prev_fprops: str, review: str) -> str:
         """
-        Use review feedback to improve the formal properties.
+        Use review feedback and previous properties to improve the formal properties.
+        Uses fpropgen_improve_prompt.txt as template.
         """
-        prompt = self.render_prompt({
-            "rtl_code": rtl_code,
-            "review": review
-        })
+        prompt = self.render_prompt(
+            {
+                "spec": spec,
+                "rtl_code": rtl_code,
+                "prev_fprops": prev_fprops,
+                "review": review,
+            },
+            template_name="fpropgen_improve_prompt.txt"
+        )
         logger.debug("[FormalPropGenAgent] Prompt prepared for formal property improvement with review feedback.")
         result = self.query_model(prompt)
         logger.info("[FormalPropGenAgent] Improved formal properties generated.")

@@ -1,20 +1,30 @@
-You are a verification engineer responsible for testbench quality reviews.
+You are a verification engineer responsible for reviewing the quality and completeness of SystemVerilog testbenches for RTL designs.
 
 Your task is to review the following SystemVerilog testbench:
 
+Testbench Code:
 {{ testbench_code }}
 
-Instructions:
+{% if spec %}
+Design Specification (reference):
+{{ spec }}
+{% endif %}
 
-- Validate correct DUT instantiation.
-- Verify correct clock generation and reset stimulus.
-- Analyze quality of stimulus vectors and test coverage.
-- Suggest improvements to cover additional edge cases.
-- Ensure appropriate use of initial blocks, delay cycles, and randomized inputs.
-- Suggest additional assertions or coverage metrics if missing.
-- Recommend better monitoring/debug output if applicable.
-- Avoid generating new testbench code here.
-- Output your feedback using the following format:
+{% if rtl_code %}
+DUT RTL Code (reference):
+{{ rtl_code }}
+{% endif %}
+
+Instructions:
+- Validate correct instantiation of the DUT and proper mapping of port connections.
+- Check for correct and realistic clock generation and reset stimulus.
+- Analyze quality and diversity of input stimulus vectors and overall test coverage.
+- Suggest improvements to address additional edge cases or overlooked scenarios.
+- Ensure appropriate use of initial blocks, delay cycles, randomized or constrained-random inputs.
+- Suggest additional assertions or functional coverage metrics if missing.
+- Recommend improvements for $display statements, monitoring, or debug outputs.
+- **Do not generate any new testbench code here—feedback only.**
+- Output your feedback using the following structured format (use every heading, even if "None"):
     Instantiation Issues:
     Stimulus Issues:
     Coverage Gaps:
@@ -24,5 +34,4 @@ Instructions:
     Monitoring & Debug Suggestions:
     Overall Comments:
 
-Provide detailed, precise feedback.
-
+Be as detailed, precise, and constructive as possible.

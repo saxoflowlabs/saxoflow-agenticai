@@ -8,7 +8,7 @@ class TBReviewAgent(BaseAgent):
         super().__init__(
             template_name="tbreview_prompt.txt",
             name="Testbench Reviewer",
-            description="Reviews SystemVerilog testbench for stimulus quality and coverage.",
+            description="Reviews SystemVerilog testbench for stimulus quality, coverage, and DUT instantiation.",
             agent_type="tbreview",
             verbose=verbose,
             log_to_file=log_to_file,
@@ -16,19 +16,23 @@ class TBReviewAgent(BaseAgent):
             override_model=override_model,
         )
 
-    def run(self, testbench_code: str) -> str:
+    def run(self, spec: str, rtl_code: str, testbench_code: str) -> str:
         """
-        Review a SystemVerilog testbench for stimulus quality and coverage.
+        Review a SystemVerilog testbench for stimulus quality, coverage, and correct RTL instantiation, using spec and RTL code as reference.
         """
-        prompt = self.render_prompt({"testbench_code": testbench_code})
+        prompt = self.render_prompt({
+            "spec": spec,
+            "rtl_code": rtl_code,
+            "testbench_code": testbench_code
+        })
         logger.debug("[TBReviewAgent] Prepared testbench review prompt.")
         result = self.query_model(prompt)
         logger.info("[TBReviewAgent] Testbench review completed.")
         return result
 
-    def improve(self, testbench_code: str, feedback: str) -> str:
+    def improve(self, spec: str, rtl_code: str, testbench_code: str, feedback: str) -> str:
         """
-        Re-run the review or escalate based on new feedback.
+        Optionally re-run the review or escalate based on new feedback, with full context.
         """
         logger.info("[TBReviewAgent] Re-running testbench review with feedback context (if any).")
-        return self.run(testbench_code)
+        return self.run(spec, rtl_code, testbench_code)

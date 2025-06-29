@@ -14,8 +14,10 @@ agent_models:
     provider: fireworks
     model: accounts/fireworks/models/llama4-maverick-instruct-basic
   rtlreview:
-    provider: openrouter
-    model: deepseek/deepseek-r1-0528-qwen3-8b:free
+    # provider: openrouter
+    # model: deepseek/deepseek-r1-0528-qwen3-8b:free
+    provider: googleaistudio
+    model: gemini-2.0-flash    
   tbreview:
     provider: googleaistudio
     model: gemini-2.0-flash

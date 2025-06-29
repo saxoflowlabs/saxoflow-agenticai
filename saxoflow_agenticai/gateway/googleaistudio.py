@@ -28,7 +28,7 @@ class GoogleAIStudioGateway(ModelGateway):
             ],
             "generationConfig": {
                 "temperature": 0.2,
-                "maxOutputTokens": 512
+                "maxOutputTokens": 8192
             }
         }
         response = requests.post(self.url, headers=headers, json=body)

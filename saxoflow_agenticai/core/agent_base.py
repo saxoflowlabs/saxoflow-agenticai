@@ -83,9 +83,11 @@ class BaseAgent(ABC):
                 f.write(block)
                 f.flush()
 
-    def render_prompt(self, context: dict) -> str:
-        prompt = self.prompt_manager.render(self.template_name, context)
-        logger.debug(f"[{self.name}] Prompt rendered using template '{self.template_name}'")
+    def render_prompt(self, context: dict, template_name: str = None) -> str:
+        """Render the prompt using a specified template, or the default."""
+        template_to_use = template_name if template_name else self.template_name
+        prompt = self.prompt_manager.render(template_to_use, context)
+        logger.debug(f"[{self.name}] Prompt rendered using template '{template_to_use}'")
         if self.verbose:
             self._log_block("PROMPT SENT TO LLM", prompt)
         return prompt

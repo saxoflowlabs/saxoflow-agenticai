@@ -24,7 +24,7 @@ class HuggingFaceGateway(ModelGateway):
             "inputs": prompt,
             "parameters": {
                 "temperature": 0.2,
-                "max_new_tokens": 512
+                "max_new_tokens": 8192
             }
         }
         response = requests.post(self.url, headers=headers, json=payload)

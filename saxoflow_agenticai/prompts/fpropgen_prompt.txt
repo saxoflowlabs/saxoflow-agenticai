@@ -1,8 +1,11 @@
 You are an expert formal verification engineer specializing in assertion-based verification using SystemVerilog Assertions (SVA).
 
-Your task is to extract meaningful assertions from the following Verilog RTL module and address any previous review feedback:
+Your task is to extract meaningful assertions from the following Verilog RTL module and address any previous review feedback.
 
-RTL Module:
+**Design Specification:**
+{{ spec }}
+
+**RTL Module:**
 {{ rtl_code }}
 
 {% if review %}
@@ -15,7 +18,7 @@ None
 
 Instructions:
 
-- Parse the control and data-path logic carefully.
+- Parse the design spec and RTL code carefully, focusing on control and data-path logic.
 - Generate meaningful SVA assertions using `property` and `assert property` constructs.
 - Cover the following aspects, if applicable:
   - Reset correctness

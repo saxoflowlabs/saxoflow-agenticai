@@ -278,7 +278,7 @@ def fullpipeline(ctx, spec_file, iters):
     click.echo(results['pipeline_report'])
 
     base = base_name_from_path(spec_file)
-    write_output(results['rtl_code'], None, "output/rtl", f"{base}_gen", ".v")
+    write_output(results['rtl_code'], None, "output/rtl", f"{base}_rtl_gen", ".v")
     write_output(results['testbench_code'], None, "output/tb", f"{base}_tb_gen", ".sv")
     write_output(results['formal_properties'], None, "output/formal", f"{base}_props_gen", ".sv")
     write_output(results['pipeline_report'], None, "output/report", f"{base}_pipeline_report", ".txt")

@@ -28,6 +28,6 @@ Instructions:
 - Target FPGA/ASIC-friendly design practices.
 - If feedback is provided, prioritize resolving those issues or suggested improvements.
 - Do not include any verification, assertion, or testbench code—only synthesizable RTL.
-- Do not include any explanations or comments outside the code. Output only the Verilog code, and ensure it is fully contained between:
-```verilog
+- Do not include any explanations or comments outside the code. Output only the SystemVerilog code, and ensure it is fully contained between:
+```systemverilog
 [your code here]
