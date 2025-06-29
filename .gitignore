@@ -63,3 +63,16 @@ api_keys.json
 # Documentation builds
 _site/
 docs/_build/
+
+# Ignore everything in input/ and output/
+input/**
+output/**
+
+# But do NOT ignore subfolders (so structure is kept) and do NOT ignore .gitkeep placeholder files
+!input/
+!input/**/
+!input/**/.gitkeep
+
+!output/
+!output/**/
+!output/**/.gitkeep
