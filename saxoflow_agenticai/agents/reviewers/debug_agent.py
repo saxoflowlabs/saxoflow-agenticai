@@ -1,40 +1,61 @@
-from saxoflow_agenticai.core.agent_base import BaseAgent
-from saxoflow_agenticai.core.log_manager import get_logger
+from langchain.prompts import PromptTemplate
+from langchain_core.language_models import BaseLanguageModel
+import logging
+import os
 
-logger = get_logger()
+from saxoflow_agenticai.core.llm_factory import get_llm_from_config  # <- Add this
 
-class DebugAgent(BaseAgent):
-    def __init__(self, verbose=False, log_to_file=None, override_provider=None, override_model=None):
-        super().__init__(
-            template_name="debug_prompt.txt",
-            name="Debug Agent",
-            description="Analyzes RTL/testbench code or simulation output and provides debugging suggestions.",
-            agent_type="debug",  # Use 'debug' as key in your model config
-            verbose=verbose,
-            log_to_file=log_to_file,
-            override_provider=override_provider,
-            override_model=override_model,
-        )
+logger = logging.getLogger("saxoflow_agenticai")
+
+def load_prompt_from_pkg(filename):
+    # Loads prompts from the package's prompts/ directory, robust to CWD/package usage.
+    here = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    prompt_path = os.path.join(here, "prompts", filename)
+    with open(prompt_path, encoding="utf-8") as f:
+        return f.read()
+
+# --- Prompt template loading ---
+debug_prompt_template = PromptTemplate(
+    input_variables=["debug_input"],
+    template=load_prompt_from_pkg("debug_prompt.txt")
+)
+
+# (Optional) If you add a feedback-aware debug_improve_prompt.txt, do similar:
+# debug_improve_prompt_template = PromptTemplate(
+#     input_variables=["debug_input", "review"],
+#     template=load_prompt_from_pkg("debug_improve_prompt.txt")
+# )
+
+class DebugAgent:
+    def __init__(self, llm: BaseLanguageModel = None, verbose: bool = False):
+        self.llm = llm or get_llm_from_config("debug")  # <- Config-driven LLM
+        self.verbose = verbose
 
     def run(self, debug_input: str) -> str:
         """
         Analyze debug input (code, log, error, or simulation output) and provide debugging advice.
         """
-        prompt = self.render_prompt({"debug_input": debug_input})
-        logger.debug("[DebugAgent] Prepared debug prompt.")
-        result = self.query_model(prompt)
+        prompt = debug_prompt_template.format(debug_input=debug_input)
+        if self.verbose:
+            logger.info("[DebugAgent] Debug prompt:\n" + prompt)
+        result = self.llm.invoke(prompt)
+        if not result or not str(result).strip():
+            logger.warning("[DebugAgent] LLM returned empty debug output. Using fallback.")
+            result = (
+                "No explicit debugging suggestions found. "
+                "Ensure your input includes code, testbench, or error logs for best results."
+            )
         logger.info("[DebugAgent] Debugging output generated.")
-        return result
+        return str(result).strip()
 
     def improve(self, debug_input: str, feedback: str) -> str:
         """
         Use feedback to refine the debugging advice.
+        (For now, re-run with just the debug_input. Add feedback prompt if desired.)
         """
-        prompt = self.render_prompt({
-            "debug_input": debug_input,
-            "review": feedback
-        })
-        logger.debug("[DebugAgent] Prepared debug improvement prompt with feedback.")
-        result = self.query_model(prompt)
-        logger.info("[DebugAgent] Improved debugging output generated.")
-        return result
+        logger.info("[DebugAgent] Re-running debug with feedback context (if any).")
+        # If you add a debug_improve_prompt.txt, you can do:
+        # prompt = debug_improve_prompt_template.format(debug_input=debug_input, review=feedback)
+        # result = self.llm.invoke(prompt)
+        # ...etc.
+        return self.run(debug_input)

@@ -1,9 +1,24 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import click
 import os
 from saxoflow_agenticai.core.agent_manager import AgentManager
 from saxoflow_agenticai.orchestrator.agent_orchestrator import AgentOrchestrator
 from saxoflow_agenticai.orchestrator.feedback_coordinator import AgentFeedbackCoordinator
 from saxoflow_agenticai.core.model_selector import ModelSelector
+
+import logging
+
+# Enable INFO-level logs for your whole app when verbose is set.
+def setup_logging(verbose: bool):
+    level = logging.INFO if verbose else logging.WARNING
+    logging.basicConfig(
+        level=level,
+        format='[%(levelname)s] %(asctime)s - %(name)s - %(message)s',
+        datefmt='%H:%M:%S'
+    )
+
 
 def read_file_or_prompt(file, prompt_text):
     if file:
@@ -37,6 +52,7 @@ def print_phase_header(name, iter_num=None):
 @click.option('--verbose', '-v', is_flag=True, default=False, help="Show LLM prompts/responses in terminal.")
 @click.pass_context
 def cli(ctx, verbose):
+    setup_logging(verbose)
     ctx.ensure_object(dict)
     ctx.obj['VERBOSE'] = verbose
 

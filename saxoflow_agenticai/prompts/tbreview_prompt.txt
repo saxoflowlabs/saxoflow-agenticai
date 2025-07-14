@@ -5,15 +5,12 @@ Your task is to review the following SystemVerilog testbench:
 Testbench Code:
 {{ testbench_code }}
 
-{% if spec %}
 Design Specification (reference):
 {{ spec }}
-{% endif %}
 
-{% if rtl_code %}
 DUT RTL Code (reference):
 {{ rtl_code }}
-{% endif %}
+
 
 Instructions:
 - Validate correct instantiation of the DUT and proper mapping of port connections.
